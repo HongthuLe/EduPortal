@@ -28,6 +28,7 @@
 // }
 // export default App
 
+import React, { useState } from 'react'
 import { Routes, Route } from "react-router-dom"
 
 // layout:
@@ -44,6 +45,14 @@ import Courses from "./pages/Courses/courses"
 import SingleStudent from "./pages/Students/SingleStudent/singleStudent"
 
 function App() {
+
+  const [taskId, setTaskId] = useState('')
+
+  const handleGetTaskId = (id) => {
+    console.log("The ID of kdsfkdsj");
+    setTaskId(id)
+  } 
+
   return (
     <>
       <Routes>
@@ -92,7 +101,7 @@ function App() {
           path="/tasks"
           element={
             <Layout>
-              <TodoList />
+              <TodoList getTaskId={handleGetTaskId} id={taskId} setTaskId={setTaskId} />
             </Layout>
           }
         />
