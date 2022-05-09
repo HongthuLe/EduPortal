@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import WidgetWrapper from './widget.style'
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded'
 

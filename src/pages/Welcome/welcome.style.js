@@ -33,11 +33,11 @@ const WelcomeWrapper = styled.div`
 
     .formBox {
       width: 360px;
-      height: 360px;
+      height: auto;
       position: relative;
       margin: 2% auto;
       background: rgb(255, 255, 255, 0.8);
-      padding: 10px;
+      padding: 32px 16px;
       overflow: hidden;
       border-radius: 16px;
     }
@@ -45,30 +45,3 @@ const WelcomeWrapper = styled.div`
 `
 
 export default WelcomeWrapper
-
-// import { makeStyles } from "@mui/styles";
-
-// const WelcomeWrapper = makeStyles({
-//   welcome: {
-//     height: "100vh",
-//     width: "100%",
-//     backgroundColor: "#42C2FF",
-//   },
-//   campusImg: {
-//     height: "100vh",
-//     backgroundImage: `url(${loginBackground})`,
-//   },
-//   login: {
-//     display: "flex",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   inputForm: {
-//     textAlign: "center",
-//   },
-//   validate: {
-//     fontSize: "13px",
-//     color: 'red',
-//   }
-//   });
-// export default WelcomeWrapper

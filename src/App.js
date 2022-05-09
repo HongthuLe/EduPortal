@@ -1,33 +1,3 @@
-// import React, { useState } from 'react'
-
-// import Dashboard from "./pages/dashboard"
-// import Welcome from "./pages/Welcome/welcome"
-
-// import db from "./firebase/firebase-config"
-// import { getAuth, onAuthStateChanged } from "firebase/auth"
-
-// const auth = getAuth(db)
-
-// function App() {
-
-//   const [user, setUser] = useState(null)
-
-//   onAuthStateChanged(auth, (usuarioFirebase) => {
-//     if(usuarioFirebase) {
-//       setUser(usuarioFirebase)
-//     } else {
-//       setUser(null)
-//     }
-//   })
-
-//   return (
-//     <>
-//       {user ? <Dashboard /> : <Welcome />}
-//     </>
-//   )
-// }
-// export default App
-
 import React, { useState } from 'react'
 import { Routes, Route } from "react-router-dom"
 
@@ -41,16 +11,35 @@ import Lecturer from "./pages/Lecturers/lecturers"
 import News from "./pages/News/news"
 import TodoList from "./pages/ToDo/todo"
 import Courses from "./pages/Courses/courses"
-//  test:
-import SingleStudent from "./pages/Students/SingleStudent/singleStudent"
 
 function App() {
 
+  //Tasks
   const [taskId, setTaskId] = useState('')
-
+  
   const handleGetTaskId = (id) => {
-    console.log("The ID of kdsfkdsj");
     setTaskId(id)
+  } 
+  
+  //Students
+  const [studentId, setStudentId] = useState('')
+
+  const handleGetStudentId = (id) => {
+    setStudentId(id)
+  } 
+
+  //Lecturers
+  const [lecturerId, setLecturerId] = useState('')
+
+  const handleGetLecturerId = (id) => {
+    setLecturerId(id)
+  } 
+
+  //News
+  const [newId, setNewId] = useState('')
+
+  const handleGetNewId = (id) => {
+    setNewId(id)
   } 
 
   return (
@@ -69,7 +58,11 @@ function App() {
           path="/students"
           element={
             <Layout>
-              <Student />
+              <Student 
+                getStudentId={handleGetStudentId} 
+                id={studentId} 
+                setStudentId={setStudentId}
+              />
             </Layout>
           }
         />
@@ -77,7 +70,11 @@ function App() {
           path="/lecturers"
           element={
             <Layout>
-              <Lecturer />
+              <Lecturer 
+                getLecturerId={handleGetLecturerId} 
+                id={lecturerId} 
+                setLecturerId={setLecturerId}
+              />
             </Layout>
           }
         />
@@ -93,7 +90,11 @@ function App() {
           path="/news"
           element={
             <Layout>
-              <News />
+              <News 
+                getNewId={handleGetNewId} 
+                id={newId} 
+                setNewId={setNewId}
+              />
             </Layout>
           }
         />
@@ -101,15 +102,11 @@ function App() {
           path="/tasks"
           element={
             <Layout>
-              <TodoList getTaskId={handleGetTaskId} id={taskId} setTaskId={setTaskId} />
-            </Layout>
-          }
-        />
-        <Route
-          path="/single"
-          element={
-            <Layout>
-              <SingleStudent />
+              <TodoList 
+                getTaskId={handleGetTaskId} 
+                id={taskId} 
+                setTaskId={setTaskId} 
+              />
             </Layout>
           }
         />

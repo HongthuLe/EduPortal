@@ -12,8 +12,14 @@ import {
   FormControlLabel,
   FormLabel,
   Alert,
+  Snackbar,
+  Slide,
 } from "@mui/material";
 import TaskDataServices from "./task.services";
+
+function TransitionLeft(props) {
+  return <Slide {...props} direction="left" />;
+}
 
 export default function Todo({ getTaskId, id, setTaskId }) {
   const [openModal, setOpenModal] = useState(false);
@@ -25,6 +31,22 @@ export default function Todo({ getTaskId, id, setTaskId }) {
   const [category, setCategory] = useState("work");
 
   const [message, setMessage] = useState({ error: false, msg: "" });
+
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const [transition, setTransition] = useState(undefined);
+
+  const handleClickAlert = (Transition) => () => {
+    setTransition(() => Transition);
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(false);
+  };
 
   // Create New Task:
   const handleSubmit = async (e) => {
@@ -41,16 +63,16 @@ export default function Todo({ getTaskId, id, setTaskId }) {
       title,
       description,
       category,
-    }
+    };
 
     try {
-      if (id !== undefined && id !== '') {
+      if (id !== undefined && id !== "") {
         await TaskDataServices.updateTask(id, newTask);
-        setTaskId('')
+        setTaskId("");
         setMessage({ error: false, msg: "The Task updated successfully!" });
       } else {
         await TaskDataServices.createTasks(newTask);
-        setMessage({ error: false, msg: "New Task added successfully!" }); 
+        setMessage({ error: false, msg: "New Task added successfully!" });
       }
     } catch (err) {
       setMessage({ error: true, msg: err.message });
@@ -58,7 +80,8 @@ export default function Todo({ getTaskId, id, setTaskId }) {
 
     setTitle("");
     setDescription("");
-    getTasks()
+    handleCloseModal();
+    getTasks();
   };
 
   // Get Task Data from firestore:
@@ -71,28 +94,28 @@ export default function Todo({ getTaskId, id, setTaskId }) {
 
   // Delete Task:
   const handleDeleteTask = async (id) => {
-    await TaskDataServices.deleteTask(id)
-    getTasks()
-  }
+    await TaskDataServices.deleteTask(id);
+    getTasks();
+  };
 
   //  Update Task:
   const handleUpdateTask = async () => {
-    setMessage('')
+    setMessage("");
     try {
-      const docSnap = await TaskDataServices.getTask(id)
-      setTitle(docSnap.data().title)
-      setDescription(docSnap.data().description)
-      setCategory(docSnap.data().category)
+      const docSnap = await TaskDataServices.getTask(id);
+      setTitle(docSnap.data().title);
+      setDescription(docSnap.data().description);
+      setCategory(docSnap.data().category);
     } catch (err) {
-      setMessage({ error: true, msg: err.message })
+      setMessage({ error: true, msg: err.message });
     }
-  }
+  };
 
   useEffect(() => {
     getTasks();
 
-    if (id !== undefined && id !== '') {
-      handleUpdateTask()
+    if (id !== undefined && id !== "") {
+      handleUpdateTask();
     }
   }, [id]);
 
@@ -125,16 +148,7 @@ export default function Todo({ getTaskId, id, setTaskId }) {
               >
                 add new to-do task
               </h2>
-              {message?.msg && (
-                <Alert
-                  severity={message?.error ? "error" : "success"}
-                  closeText
-                  onClose={() => setMessage("")}
-                  style={{ marginBottom: "16px" }}
-                >
-                  {message?.msg}
-                </Alert>
-              )}
+
               <form style={{ marginBottom: "16px" }} onSubmit={handleSubmit}>
                 <Stack spacing={3}>
                   <TextField
@@ -199,7 +213,12 @@ export default function Todo({ getTaskId, id, setTaskId }) {
                   >
                     Close
                   </Button>
-                  <Button type="submit" variant="contained" disableElevation>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disableElevation
+                    onClick={handleClickAlert(TransitionLeft)}
+                  >
                     Submit
                   </Button>
                 </div>
@@ -207,25 +226,48 @@ export default function Todo({ getTaskId, id, setTaskId }) {
             </div>
           </Box>
         </Modal>
+        {message?.msg && (
+          <Snackbar
+            open={openAlert}
+            autoHideDuration={3000}
+            onClose={handleCloseAlert}
+            TransitionComponent={transition}
+            key={transition ? transition.name : ""}
+          >
+            <Alert
+              onClose={() => setMessage("")}
+              severity={message?.error ? "error" : "success"}
+              sx={{ width: "100%" }}
+            >
+              {message?.msg}
+            </Alert>
+          </Snackbar>
+        )}
       </div>
       <div className="bottom">
         {tasks.map((doc, index) => {
           return (
             <div className="card">
               <div className="box">
-                  <div className="content" key={doc.id}>
-                    <h1>{index + 1}</h1>
-                    <h5>{doc.category}</h5>
-                    <h3>{doc.title}</h3>
-                    <p>{doc.description}</p>
-                  </div>
-                  <div className="actions">
-                    <i className="bx bx-edit" onClick={(e) => handleOpenModal(getTaskId(doc.id))} />
-                    <i className="bx bx-check" onClick={(e) => handleDeleteTask(doc.id)} />
-                  </div>
+                <div className="content" key={doc.id}>
+                  <h1>{index + 1}</h1>
+                  <h5>{doc.category}</h5>
+                  <h3>{doc.title}</h3>
+                  <p>{doc.description}</p>
+                </div>
+                <div className="actions">
+                  <i
+                    className="bx bx-edit"
+                    onClick={(e) => handleOpenModal(getTaskId(doc.id))}
+                  />
+                  <i
+                    className="bx bx-check"
+                    onClick={(e) => handleDeleteTask(doc.id)}
+                  />
+                </div>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </ToDoWrapper>
